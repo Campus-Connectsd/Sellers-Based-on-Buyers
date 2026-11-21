@@ -42,8 +42,7 @@ Object.assign(ACTIONS, {
   /* Browsing */
 
   "choose-category": update((target) => ({ category: target.dataset.category })),
-  "set-shop-type": update((target) => ({ shopType: target.dataset.shopType })),
-  "clear-filters": update(() => ({ query: "", category: "All", shopType: "all", trust: "any" })),
+  "clear-filters": update(() => ({ query: "", category: "All", trust: "any" })),
   "open-sort": () => openSortModal(),
   "open-filters": () => openFiltersModal(),
   "set-sort": (target) => {
@@ -118,9 +117,10 @@ Object.assign(ACTIONS, {
   "toggle-job-form": update(() => ({ jobFormOpen: !state.jobFormOpen })),
   "toggle-housing-form": update(() => ({ housingFormOpen: !state.housingFormOpen })),
   "open-job": (target) => setView("jobs", { selectedJobId: target.dataset.id, jobFormOpen: false }),
-  "open-housing": (target) => setView("housing", { selectedHousingId: target.dataset.id, selectedAgentId: null, housingFormOpen: false }),
-  "open-agent": (target) => setView("housing", { selectedAgentId: target.dataset.id, selectedHousingId: null, housingFormOpen: false }),
-  "close-board-item": update(() => ({ selectedJobId: null, selectedHousingId: null, selectedAgentId: null })),
+  "open-housing": (target) => setView("housing", { selectedHousingId: target.dataset.id, selectedAgentId: null, selectedApartmentId: null, housingFormOpen: false }),
+  "open-agent": (target) => setView("housing", { selectedAgentId: target.dataset.id, selectedHousingId: null, selectedApartmentId: null, housingFormOpen: false }),
+  "open-apartment": (target) => setView("housing", { selectedApartmentId: target.dataset.id, selectedHousingId: null, selectedAgentId: null, housingFormOpen: false }),
+  "close-board-item": update(() => ({ selectedJobId: null, selectedHousingId: null, selectedAgentId: null, selectedApartmentId: null })),
 
   /* Tickets */
 
@@ -264,6 +264,7 @@ const DEEP_LINKS = {
   job: (id) => setView("jobs", { selectedJobId: id }),
   housing: (id) => setView("housing", { selectedHousingId: id }),
   agent: (id) => setView("housing", { selectedAgentId: id }),
+  apartment: (id) => setView("housing", { selectedApartmentId: id }),
   chore: (id) => openChoreBoard(id),
   "school-service": (id) => setView("school-service", { selectedSchoolServiceId: id })
 };

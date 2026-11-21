@@ -54,7 +54,8 @@ function statusPill(status, label) {
 }
 
 function buyerAvatar(person) {
-  return `<span class="mini-avatar buyer-avatar ${person.accent || "lilac"}">${escapeHtml(person.initials)}</span>`;
+  const personId = person.buyer || person.name || person.id;
+  return personMark("span", `mini-avatar buyer-avatar ${person.accent || "lilac"}`, person.initials, personId);
 }
 
 function listingThumb(listing) {
@@ -114,8 +115,9 @@ function attentionItems() {
   return items;
 }
 
-function snapshotCard({ tone, label, value, hint }) {
-  return `<div class="snapshot-card ${tone}"><span class="snapshot-label">${label}</span><div class="snapshot-value">${value}</div><span class="snapshot-hint">${hint}</span></div>`;
+function snapshotCard({ tone, label, value, hint, delta }) {
+  const change = delta ? `<span class="snapshot-delta ${delta.direction}">${delta.direction === "up" ? "↑" : "↓"} ${delta.value}%</span>` : "";
+  return `<div class="snapshot-card ${tone}"><span class="snapshot-label">${label}</span><div class="snapshot-value">${value}</div><span class="snapshot-hint">${change}${hint}</span></div>`;
 }
 
 function dashboardAttention() {
@@ -127,7 +129,7 @@ function dashboardAttention() {
 function storefrontPreview(seller) {
   const listings = myListings().filter((listing) => listingStatus(listing) === "active").slice(0, 2);
   const rows = listings.map((listing) => `<button type="button" class="storefront-listing" data-action="seller-preview-listing" data-id="${listing.id}">${listingThumb(listing)}<span class="attention-copy"><strong>${escapeHtml(listing.title)}</strong><span class="muted small">${money(listing.price)} · ${listing.kind === "service" ? "Book" : "Shop"}</span></span></button>`).join("");
-  return `<button type="button" class="storefront-seller" data-action="seller-preview-profile"><span class="seller-avatar dash-avatar">${escapeHtml(seller.initials)}</span><span class="attention-copy"><strong>${escapeHtml(seller.name)}</strong><span class="storefront-handle"><span class="muted small">${escapeHtml(seller.handle)}</span>${studentVerifiedPill()}</span><span class="storefront-bio">${escapeHtml(seller.bio)}</span></span><span class="storefront-rating">${seller.rating} ★</span></button>${rows}`;
+  return `<button type="button" class="storefront-seller" data-action="seller-preview-profile">${personMark("span", "seller-avatar dash-avatar", seller.initials, seller.id)}<span class="attention-copy"><strong>${escapeHtml(seller.name)}</strong><span class="storefront-handle"><span class="muted small">${escapeHtml(seller.handle)}</span>${studentVerifiedPill()}</span><span class="storefront-bio">${escapeHtml(seller.bio)}</span></span><span class="storefront-rating">${seller.rating} ★</span></button>${rows}`;
 }
 
 function recentOrderRow(order) {
@@ -153,7 +155,7 @@ function sellerDashboardView() {
   const kinds = [...new Set(active.map((listing) => listing.kind === "service" ? "Book" : listing.kind === "ticket" ? "Tickets" : "Shop"))];
   return `${sellerHeader({ title: `${greeting}, ${escapeHtml(firstName(seller.name))}.`, sub: "Your storefront is live. Here is what needs your attention today.", actions: `<button class="primary-button" data-view="seller-scan">${icon("ticket")} Scan at the door</button>` })}
     <div class="snapshot-grid">
-      ${snapshotCard({ tone: "coral", label: "This month", value: `$${formatNumber(month.earnings)}`, hint: `${change >= 0 ? "↑" : "↓"} ${Math.abs(change)}% from last month` })}
+      ${snapshotCard({ tone: "coral", label: "This month", value: `$${formatNumber(month.earnings)}`, delta: { direction: change >= 0 ? "up" : "down", value: Math.abs(change) }, hint: "from last month" })}
       ${snapshotCard({ tone: "lilac", label: "Active listings", value: String(active.length), hint: `${plural(kinds.length, "type", "types")}: ${escapeHtml(kinds.join(" + "))}` })}
       ${snapshotCard({ tone: "butter", label: "Completed", value: String(seller.completed), hint: "All-time transactions" })}
       ${snapshotCard({ tone: "mint", label: "Response time", value: RESPONSE_GOALS[seller.response] || escapeHtml(seller.response), hint: `Usually replies in ${escapeHtml(seller.response)}` })}
@@ -162,8 +164,7 @@ function sellerDashboardView() {
       <section class="seller-card"><div class="seller-card-header seller-card-header-stack"><div><div class="eyebrow">Needs attention</div><h2>Keep momentum.</h2></div><button class="text-button" data-view="seller-orders">View orders ${icon("arrow")}</button></div>${dashboardAttention()}</section>
       <section class="seller-card"><div class="seller-card-header seller-card-header-stack"><div><div class="eyebrow">Your storefront</div><h2>What buyers see.</h2></div><button class="text-button" data-view="seller-profile">Edit profile ${icon("arrow")}</button></div><div class="storefront-preview">${storefrontPreview(seller)}</div></section>
     </div>
-    <section class="seller-card recent-activity"><div class="seller-card-header"><div><div class="eyebrow">Recent activity</div><h2>Orders moving through your shop.</h2></div><button class="text-button" data-view="seller-analytics">See earnings ${icon("arrow")}</button></div><div class="recent-order-list">${data.sellerOrders.slice(0, 4).map(recentOrderRow).join("")}</div></section>
-    ${premiumBanner("Make your profile the one buyers open first.", "A premium subscription puts your photo, bio and best work ahead of other sellers, with a badge buyers can see before they message you.", "Upgrade your profile")}`;
+    <section class="seller-card recent-activity"><div class="seller-card-header"><div><div class="eyebrow">Recent activity</div><h2>Orders moving through your shop.</h2></div><button class="text-button" data-view="seller-analytics">See earnings ${icon("arrow")}</button></div><div class="recent-order-list">${data.sellerOrders.slice(0, 4).map(recentOrderRow).join("")}</div></section>`;
 }
 
 /* ---------- Listings ---------- */
@@ -331,7 +332,7 @@ function sellerListingEditView() {
           <div class="field full"><label for="edit-meeting">${service ? "Where it happens" : "Handoff location"}</label><input id="edit-meeting" data-draft="meeting" value="${escapeHtml(draft.meeting)}" /></div>
           ${service ? hoursNote : productFields}
         </div>
-        <div class="button-row" style="margin-top: 18px"><button class="primary-button" type="submit">Save changes ${icon("check")}</button><button class="ghost-button" type="button" data-view="seller-listings">Cancel</button><button class="danger-button" type="button" data-action="seller-delete-listing" data-id="${listing.id}">${icon("trash")} Delete</button></div>
+        <div class="button-row form-actions"><button class="primary-button" type="submit">Save changes ${icon("check")}</button><button class="ghost-button" type="button" data-view="seller-listings">Cancel</button><button class="danger-button" type="button" data-action="seller-delete-listing" data-id="${listing.id}">${icon("trash")} Delete</button></div>
       </form>
       <aside class="editor-side">
         <div class="eyebrow">Live preview</div>
@@ -421,7 +422,7 @@ function sellerOrderView() {
   return `${sellerHeader({ eyebrow: `${order.kind === "service" ? "Booking" : "Order"} · CC-${order.id.slice(-4).toUpperCase()}`, title: escapeHtml(orderListingTitle(order)), sub: `${escapeHtml(order.buyer)} · placed ${escapeHtml(timeAgo(order.placedAt))}`, back: { action: "seller-back-to-orders", label: "Back to orders" }, actions: `<button class="ghost-button" data-action="seller-message-buyer" data-id="${order.id}">${icon("chat")} Message buyer</button>` })}
     <div class="order-layout">
       <section class="order-panel">
-        <div class="order-main-top"><div class="summary-visual" style="border:0;padding:0">${listing ? `<div class="summary-thumb ${listing.accent}">${listing.emoji}</div>` : ""}<div><strong>${escapeHtml(orderListingTitle(order))}</strong><div class="small muted">${escapeHtml(getStore(listing?.storeId)?.name || "")}</div></div></div>${statusPill(order.status, orderStatusLabel(order))}</div>
+        <div class="order-main-top"><div class="summary-visual" style="border:0;padding:0">${listing ? cardThumb(listing.title, listing.accent, listing.emoji) : ""}<div><strong>${escapeHtml(orderListingTitle(order))}</strong><div class="small muted">${escapeHtml(getStore(listing?.storeId)?.name || "")}</div></div></div>${statusPill(order.status, orderStatusLabel(order))}</div>
         ${orderTimeline(order)}
         <div class="order-detail-card seller-order-details">
           <div class="order-detail-row"><span>${order.kind === "service" ? "When" : "Pickup"}</span><strong>${escapeHtml(orderWhen(order))}</strong></div>
@@ -448,7 +449,7 @@ function sellerOrderView() {
 function openOrderReasonModal(order, kind) {
   const decline = kind === "decline";
   const reasons = decline ? ["That time doesn't work for me", "I'm fully booked", "The request is outside what I offer", "Other"] : ["I can no longer make it", "Item is no longer available", "Buyer asked to cancel", "Other"];
-  renderModal(`<div class="eyebrow">${decline ? "Decline request" : "Cancel & refund"}</div><h2>${decline ? `Decline ${escapeHtml(firstName(order.buyer))}'s request?` : "Cancel this order?"}</h2><p class="muted">${decline ? "The buyer isn't charged. We'll let them know kindly." : `${escapeHtml(order.buyer)} gets a full refund of ${money(order.amount)}.`}</p><form data-form="seller-order-reason" data-id="${order.id}" data-kind="${kind}"><div class="field"><label for="order-reason">Reason</label><select id="order-reason" name="reason">${reasons.map((reason) => `<option>${reason}</option>`).join("")}</select></div><div class="field" style="margin-top:13px"><label for="order-message">Message to buyer (optional)</label><textarea id="order-message" name="message" placeholder="Suggest another time or say thanks."></textarea></div><div class="modal-actions"><button class="ghost-button" type="button" data-action="close-modal">Keep it</button><button class="danger-button" type="submit">${decline ? "Decline request" : "Cancel & refund"}</button></div></form>`);
+  renderModal(`<div class="eyebrow">${decline ? "Decline request" : "Cancel & refund"}</div><h2>${decline ? `Decline ${escapeHtml(firstName(order.buyer))}'s request?` : "Cancel this order?"}</h2><p class="muted">${decline ? "The buyer isn't charged. We'll let them know kindly." : `${escapeHtml(order.buyer)} gets a full refund of ${money(order.amount)}.`}</p><form data-form="seller-order-reason" data-id="${order.id}" data-kind="${kind}"><div class="field"><label for="order-reason">Reason</label><select id="order-reason" name="reason">${reasons.map((reason) => `<option>${reason}</option>`).join("")}</select></div><div class="field"><label for="order-message">Message to buyer (optional)</label><textarea id="order-message" name="message" placeholder="Suggest another time or say thanks."></textarea></div><div class="modal-actions"><button class="ghost-button" type="button" data-action="close-modal">Keep it</button><button class="danger-button" type="submit">${decline ? "Decline request" : "Cancel & refund"}</button></div></form>`);
 }
 
 /** `slots` are the service's open times ({ date, time }), from api.getAvailability. The next two weeks are offered. */
@@ -663,7 +664,7 @@ function sellerProfileSections() {
 
 function sellerProfilePublic(seller) {
   return `<form class="settings-form" data-form="seller-save-profile">
-    <div class="seller-hero seller-hero-preview"><div class="seller-hero-main"><div class="seller-avatar">${escapeHtml(seller.initials)}</div><div>${studentVerifiedPill()}<h2>${escapeHtml(seller.name)}</h2><p class="muted" style="margin:0">${escapeHtml(seller.campus)} · ${escapeHtml(seller.handle)}</p><div class="seller-stats"><span><strong>${seller.rating}</strong> ★</span><span><strong>${seller.reviews}</strong> reviews</span><span><strong>${seller.completed}</strong> completed</span><span>Replies in <strong>${escapeHtml(seller.response)}</strong></span></div></div></div></div>
+    <div class="seller-hero seller-hero-preview"><div class="seller-hero-main">${personMark("div", "seller-avatar", seller.initials, seller.id)}<div>${studentVerifiedPill()}<h2>${escapeHtml(seller.name)}</h2><p class="muted" style="margin:0">${escapeHtml(seller.campus)} · ${escapeHtml(seller.handle)}</p><div class="seller-stats"><span><strong>${seller.rating}</strong> ★</span><span><strong>${seller.reviews}</strong> reviews</span><span><strong>${seller.completed}</strong> completed</span><span>Replies in <strong>${escapeHtml(seller.response)}</strong></span></div></div></div></div>
     <div class="form-grid">
       <div class="field"><label for="profile-name">Display name</label><input id="profile-name" name="name" required maxlength="48" value="${escapeHtml(seller.name)}" /></div>
       <div class="field"><label for="profile-handle">Handle</label><input id="profile-handle" name="handle" required maxlength="24" value="${escapeHtml(seller.handle)}" /></div>
@@ -795,8 +796,8 @@ function storeManageCard(store) {
   const listings = everyListing().filter((listing) => listing.storeId === store.id);
   const active = listings.filter((listing) => listingStatus(listing) === "active").length;
   return `<article class="store-manage-card">
-    <div class="store-card-banner ${store.accent}"><span class="store-card-previews" aria-hidden="true">${listings.slice(0, 3).map((listing) => `<span>${listing.emoji}</span>`).join("")}</span></div>
-    <span class="store-card-logo" aria-hidden="true">${escapeHtml(getSeller(store.sellerId).initials)}</span>
+    <div class="${storeBannerClass(store)}">${storeBannerContents(store, `<span class="store-card-previews" aria-hidden="true">${listings.slice(0, 3).map((listing) => `<span>${listing.emoji}</span>`).join("")}</span>`)}</div>
+    ${personMark("span", "store-card-logo", getSeller(store.sellerId).initials, store.sellerId, `aria-hidden="true"`)}
     <div class="store-card-body">
       <span class="store-card-name">${escapeHtml(store.name)}</span>
       <span class="store-card-owner">${escapeHtml(store.handle)}</span>

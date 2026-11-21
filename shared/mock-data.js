@@ -537,6 +537,15 @@ function createMockDb() {
     { id: "chore-desk", title: "Desk carry", meta: "Sat · 12:00 PM · Art North", price: "$20", amount: "$20", accent: "butter", emoji: "🪑", poster: "Harper Diaz", initials: "HD", summary: "A small desk from Art North to a car at the curb. One other person is already helping.", facts: [["When", "Saturday, 12:00 PM"], ["Where", "Art North"], ["Pay", "$20"]], status: "open" }
   ];
 
+  const apartments = [
+    { id: "apt-plaza", title: "South Campus Plaza", kicker: "On campus", meta: "Trolley stop downstairs · Gym", price: "From $1,650/mo", accent: "sky", emoji: "🏢", summary: "Studios and shared units on the south edge of campus, with a market and the trolley at the door.", facts: [["Where", "South Campus Plaza"], ["Walk", "On campus"], ["Homes", "Studios and shares"]] },
+    { id: "apt-blvd", title: "BLVD63", kicker: "College Area", meta: "El Cajon Blvd · Short walk", price: "From $1,400/mo", accent: "butter", emoji: "🌆", summary: "A College Area building a short walk up the hill, with studios and a few larger floor plans.", facts: [["Where", "El Cajon Boulevard"], ["Walk", "About 12 minutes"], ["Homes", "Studios and one-bedrooms"]] },
+    { id: "apt-granada", title: "The Granada", kicker: "Montezuma Road", meta: "Across from campus", price: "From $1,500/mo", accent: "mint", emoji: "🌿", summary: "Apartments across Montezuma from campus. A crosswalk and you are on the edge of school.", facts: [["Where", "Montezuma Road"], ["Walk", "About 8 minutes"], ["Homes", "Studios and one-bedrooms"]] },
+    { id: "apt-towers", title: "University Towers", kicker: "55th Street", meta: "Walk to class · Furnished options", price: "From $1,200/mo", accent: "lilac", emoji: "🗼", summary: "A tall student building with furnished rooms and shares, close enough to walk between classes.", facts: [["Where", "55th Street"], ["Walk", "About 10 minutes"], ["Homes", "Furnished shares and privates"]] },
+    { id: "apt-unscripted", title: "Unscripted", kicker: "College Area", meta: "Furnished studios", price: "From $1,550/mo", accent: "coral", emoji: "✨", summary: "Furnished studios near campus for a student who wants their own door and a short commute.", facts: [["Where", "College Area"], ["Walk", "About 15 minutes"], ["Homes", "Furnished studios"]] },
+    { id: "apt-fiftysix", title: "Fifty Six East", kicker: "56th Street", meta: "Walk or a short bus", price: "From $1,350/mo", accent: "sky", emoji: "🏠", summary: "Apartments just east of campus. Walk it on a nice day, or catch the bus along the hill.", facts: [["Where", "56th Street"], ["Walk", "About 15 minutes"], ["Homes", "Studios and one-bedrooms"]] }
+  ];
+
   const agents = [
     { id: "agent-camila", name: "Camila Reyes", initials: "CR", brokerage: "College Area Homes", focus: "College Area", summary: "Studios and shared houses a short walk from campus.", rating: "4.9", reviews: 18, accent: "coral" },
     { id: "agent-owen", name: "Owen Blake", initials: "OB", brokerage: "Plaza Residential", focus: "South Campus Plaza", summary: "Furnished units by the trolley, gym, and shuttle stop.", rating: "4.8", reviews: 24, accent: "mint" },
@@ -737,6 +746,7 @@ function createMockDb() {
     categories,
     schoolServices,
     agents,
+    apartments,
     listings: [...services, ...products, ...tickets, ...drafts],
     sellers,
     stores,

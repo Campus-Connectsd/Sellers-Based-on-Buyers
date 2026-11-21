@@ -65,18 +65,36 @@
 .snapshot-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-height: 132px;
-  padding: 18px 18px 16px;
-  border-radius: 18px;
+  gap: 6px;
+  min-height: 128px;
+  padding: 18px 18px 15px;
+  border: 2px solid var(--snapshot-accent, var(--line));
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(21, 21, 21, 0.04), 0 6px 16px rgba(21, 21, 21, 0.05);
 }
-.snapshot-card.coral { background: #f7c7c2; }
-.snapshot-card.lilac { background: #c9b6f5; }
-.snapshot-card.butter { background: #f3c84a; }
-.snapshot-card.mint { background: #b7e7cf; }
-.snapshot-label { font-size: 13px; font-weight: 700; }
-.snapshot-value { font-size: 32px; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
-.snapshot-hint { margin-top: auto; font-size: 12px; font-weight: 650; }
+.snapshot-card.coral { --snapshot-accent: #e07a72; }
+.snapshot-card.lilac { --snapshot-accent: #8b74d6; }
+.snapshot-card.butter { --snapshot-accent: #c49212; }
+.snapshot-card.mint { --snapshot-accent: #1d7a4a; }
+.snapshot-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.snapshot-value {
+  font-family: "Avenir Next", "Trebuchet MS", Inter, sans-serif;
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -.03em;
+  line-height: 1.05;
+}
+.snapshot-hint { margin-top: auto; color: var(--muted); font-size: 12px; font-weight: 600; line-height: 1.35; }
+.snapshot-delta { margin-right: 4px; font-weight: 750; }
+.snapshot-delta.up { color: #1d7a4a; }
+.snapshot-delta.down { color: var(--danger); }
 .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 22px 0 28px; }
 .kpi-card {
   display: flex;
@@ -201,7 +219,7 @@
   color: inherit;
 }
 .storefront-seller { align-items: flex-start; }
-.dash-avatar { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--cobalt); color: #fff; font-weight: 800; flex: 0 0 44px; }
+.dash-avatar { position: relative; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; overflow: hidden; background: var(--cobalt); color: #fff; font-weight: 800; flex: 0 0 44px; }
 .storefront-handle { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
 .verified-pill {
   display: inline-flex;

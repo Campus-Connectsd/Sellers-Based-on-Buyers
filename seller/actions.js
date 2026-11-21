@@ -179,7 +179,6 @@ Object.assign(ACTIONS, {
 
   "message-seller": previewReadOnly,
   "message-store": previewReadOnly,
-  "primary-listing-action": previewReadOnly,
   "confirm-order": previewReadOnly,
   "start-checkout": previewReadOnly,
 

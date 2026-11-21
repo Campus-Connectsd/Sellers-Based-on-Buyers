@@ -15,6 +15,7 @@ const data = {
   categories: [],
   schoolServices: [],
   agents: [],
+  apartments: [],
   listings: [],
   sellers: [],
   stores: [],
@@ -46,6 +47,7 @@ const LOADERS = {
   categories: api.getCategories,
   schoolServices: api.getSchoolServices,
   agents: api.getAgents,
+  apartments: api.getApartments,
   listings: api.getListings,
   sellers: api.getSellers,
   stores: api.getStores,
@@ -70,7 +72,7 @@ const LOADERS = {
 
 /** What each page fetches when it opens. */
 const SHARED_DATA = ["session", "categories", "listings", "sellers", "stores", "conversations", "notifications"];
-const BUYER_DATA = [...SHARED_DATA, "schoolServices", "agents", "jobs", "housing", "chores", "ticketPosts", "account", "paymentMethods", "orders"];
+const BUYER_DATA = [...SHARED_DATA, "schoolServices", "agents", "apartments", "jobs", "housing", "chores", "ticketPosts", "account", "paymentMethods", "orders"];
 const SELLER_DATA = [...SHARED_DATA, "sellerOrders", "listingStats", "analytics", "reviews", "sellerSettings", "schedule", "calendar", "payouts"];
 
 /** Fetches the named parts of `data` again: `await load("listings", "stores")`. */
@@ -84,7 +86,6 @@ const NAVIGATION_DEFAULTS = {
   category: "All",
   sort: "recommended",
   trust: "any",
-  shopType: "all",
   storesFilter: "All",
   storesQuery: "",
   jobQuery: "",
@@ -92,6 +93,7 @@ const NAVIGATION_DEFAULTS = {
   selectedJobId: null,
   selectedHousingId: null,
   selectedAgentId: null,
+  selectedApartmentId: null,
   sellKind: null,
   sellMerchandiseType: null
 };

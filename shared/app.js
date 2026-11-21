@@ -32,7 +32,10 @@ function updateChrome() {
 
   setBadge(".messages-nav-button", unreadCount(data.conversations), "Messages");
   setBadge(".notifications-nav-button", unreadCount(data.notifications), "Notifications");
-  document.querySelector(".profile-nav-button").textContent = initialsOf(IS_SELLER ? getSeller(myId())?.name : data.account.displayName);
+  const profileButton = document.querySelector(".profile-nav-button");
+  const profileName = IS_SELLER ? getSeller(myId())?.name : data.account.displayName;
+  profileButton.classList.toggle("has-photo", Boolean(profilePhoto(myId())));
+  profileButton.innerHTML = avatarContents(initialsOf(profileName), myId());
 
   if (IS_SELLER) {
     const requests = data.sellerOrders.filter((order) => order.status === "requested").length;
@@ -81,11 +84,23 @@ function navigate(view) {
 /* ---------- Shared modals ---------- */
 
 function openHelpModal() {
-  renderModal(`<div class="eyebrow">Support</div><h2>Tell us what happened.</h2><p class="muted">This prototype does not send a real case, but the interaction shows how support should feel: calm, specific and connected to the order.</p><form data-form="support"><div class="field"><label for="support-topic">What do you need help with?</label><select id="support-topic" name="topic"><option>Question about a booking</option><option>Question about a product pickup</option><option>Safety or trust concern</option><option>Payment or refund question</option></select></div><div class="field" style="margin-top: 13px"><label for="support-message">Tell us more</label><textarea id="support-message" name="message" required placeholder="Share the details we need to understand."></textarea></div><div class="modal-actions"><button class="ghost-button" type="button" data-action="close-modal">Cancel</button><button class="primary-button" type="submit">Create demo case ${icon("arrow")}</button></div></form>`);
+  renderModal(`<div class="eyebrow">Support</div><h2>Tell us what happened.</h2>
+    <p class="muted">This prototype does not send a real case, but the interaction shows how support should feel: calm, specific and connected to the order.</p>
+    <form data-form="support">
+      <div class="field"><label for="support-topic">What do you need help with?</label><select id="support-topic" name="topic"><option>Question about a booking</option><option>Question about a product pickup</option><option>Safety or trust concern</option><option>Payment or refund question</option></select></div>
+      <div class="field"><label for="support-message">Tell us more</label><textarea id="support-message" name="message" required placeholder="Share the details we need to understand."></textarea></div>
+      <div class="modal-actions"><button class="ghost-button" type="button" data-action="close-modal">Cancel</button><button class="primary-button" type="submit">Create demo case ${icon("arrow")}</button></div>
+    </form>`);
 }
 
 function openReportModal() {
-  renderModal(`<div class="eyebrow">Safety and trust</div><h2>Report a concern.</h2><p class="muted">Report content, a message or a handoff that does not feel right. Your report would be linked to the relevant context for review.</p><form data-form="report"><div class="field"><label for="report-reason">Reason</label><select id="report-reason" name="reason"><option>Unsafe meetup or behavior</option><option>Off-platform payment request</option><option>Harassment or discrimination</option><option>Listing is misleading</option></select></div><div class="field" style="margin-top: 13px"><label for="report-message">What should the team know?</label><textarea id="report-message" name="message" required placeholder="Describe what happened."></textarea></div><div class="modal-actions"><button class="ghost-button" type="button" data-action="close-modal">Cancel</button><button class="danger-button" type="submit">Submit report</button></div></form>`);
+  renderModal(`<div class="eyebrow">Safety and trust</div><h2>Report a concern.</h2>
+    <p class="muted">Report content, a message or a handoff that does not feel right. Your report would be linked to the relevant context for review.</p>
+    <form data-form="report">
+      <div class="field"><label for="report-reason">Reason</label><select id="report-reason" name="reason"><option>Unsafe meetup or behavior</option><option>Off-platform payment request</option><option>Harassment or discrimination</option><option>Listing is misleading</option></select></div>
+      <div class="field"><label for="report-message">What should the team know?</label><textarea id="report-message" name="message" required placeholder="Describe what happened."></textarea></div>
+      <div class="modal-actions"><button class="ghost-button" type="button" data-action="close-modal">Cancel</button><button class="danger-button" type="submit">Submit report</button></div>
+    </form>`);
 }
 
 function openVerifiedModal() {

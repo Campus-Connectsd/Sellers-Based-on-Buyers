@@ -150,8 +150,10 @@ body[data-mode="seller"] .inbox-badge { background: var(--coral); color: var(--i
 .notification-popover-body { display: block; margin-top: 3px; font-size: 12px; line-height: 1.4; }
 .notification-popover-footer { display: flex; justify-content: flex-end; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--warm-white); }
 .avatar {
+  position: relative;
   display: inline-grid;
   place-items: center;
+  overflow: hidden;
   border: 0;
   border-radius: 50%;
   background: #e07a72;
@@ -159,6 +161,8 @@ body[data-mode="seller"] .inbox-badge { background: var(--coral); color: var(--i
   font-weight: 800;
   letter-spacing: -.03em;
 }
+.avatar-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.has-photo { color: transparent; }
 .avatar-small { width: 38px; height: 38px; font-size: 12px; }
 .profile-nav-button { cursor: pointer; transition: box-shadow .16s ease, transform .16s ease; }
 .profile-nav-button:hover { transform: translateY(-1px); }
@@ -175,7 +179,6 @@ body[data-mode="seller"] .inbox-badge { background: var(--coral); color: var(--i
 .svg-icon { overflow: visible; }
 .trust-icon .svg-icon { width: 18px; height: 18px; }
 .verified-check .icon-verified { width: 16px; height: 16px; flex-shrink: 0; color: var(--cobalt); }
-.verified-badge .icon-verified { width: 15px; height: 15px; flex-shrink: 0; color: var(--cobalt); }
 .primary-button .icon-verified { color: #fff; --verified-mark: var(--cobalt); }
 .trust-icon .icon-verified { width: 18px; height: 18px; color: var(--cobalt); }
 .success-mark .icon-verified { width: 36px; height: 36px; color: var(--cobalt); }
@@ -225,12 +228,14 @@ h4 { font-size: 17px; margin-bottom: 6px; }
 .danger-button { background: #fff4f4; color: var(--danger); border-color: #f4cdcd; }
 .danger-button:hover { background: #ffe9e9; }
 .button-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.button-row.form-actions { margin-top: 18px; }
 .button-row.stretch > * { flex: 1; }
 .full-width { width: 100%; }
 
 .form-card { max-width: 740px; padding: 28px; border: 1px solid var(--line); border-radius: 23px; background: #fff; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 .field { display: grid; gap: 7px; }
+.modal form .field + .field { margin-top: 13px; }
 .field.full { grid-column: 1 / -1; }
 .field label { font-size: 12px; font-weight: 900; }
 .field input, .field textarea, .field select { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; outline: 0; background: #fff; color: var(--ink); }

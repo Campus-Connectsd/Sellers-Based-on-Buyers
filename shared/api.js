@@ -242,6 +242,7 @@ const api = (() => {
     getCategories: () => db.categories,
     getSchoolServices: () => db.schoolServices,
     getAgents: () => db.agents,
+    getApartments: () => db.apartments,
     getSellers: () => db.sellers,
     getStores: () => db.stores,
     /** Services booked from weekly hours also carry `nextOpening` ({ date, time } or null). */
